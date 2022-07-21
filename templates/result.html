@@ -1,0 +1,19 @@
+<table>
+    <caption>Котировки валют</caption>
+   <tr>
+        <th>Код валюты</th>
+        <th>Название валюты</th>
+        <th>Цена</th>
+        <th>Дата котировки</th>
+        <th>Номинал</th>
+   </tr>
+    {% for currency in currencies %}
+        <tr>
+            <td>{{ currency.code }}</td>
+            <td>{{ currency.name }}</td>
+            <td>{{ currency.price }}</td>
+            <td>{{ currency.time }}</td>
+            <td>{{ currency.nominal }}</td>
+       </tr>
+    {% endfor %}
+</table>

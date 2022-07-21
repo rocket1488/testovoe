@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Курсы валют</title>
+    <script>
+        function add(){
+            slct = document.createElement('p')
+            slct.innerHTML = `<p><select class="currency">
+        <option value='Ethereum'>Ethereum</option>
+        <option value='Bitcoin'>Bitcoin</option>
+        <option value='Litecoin'>Litecoin</option>
+        <option value='Prizm'>Prizm</option>
+        <option value='Tron'>Tron</option>
+        <option value='Binance coin'>Binance coin</option>
+        <option value='Decimal'>Decimal</option>
+       </select></p>`
+            btn = document.getElementById("addButton")
+            list = document.getElementById("curList")
+            list.insertBefore(slct, btn)
+        }
+
+        function send() {
+            let xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == XMLHttpRequest.DONE) {
+                    document.getElementById('result').innerHTML = xhr.responseText;
+                }
+            }
+            xhr.open("POST", "/result")
+            xhr.setRequestHeader("Accept", "application/json");
+            xhr.setRequestHeader("Content-Type", "application/json");
+            let data = {
+                currencies : []
+            }
+            cur_list = document.getElementsByClassName("currency")
+
+            for(let i = 0; i < cur_list.length; i++) {
+                cur = cur_list[i]
+                data.currencies.push(cur.children[cur.selectedIndex].value)
+            }
+            xhr.send(JSON.stringify(data))
+        }
+    </script>
+</head>
+<body>
+<div>
+    <div id="curList">
+        <p><select class="currency">
+        <option value='Ethereum'>Ethereum</option>
+        <option value='Bitcoin'>Bitcoin</option>
+        <option value='Litecoin'>Litecoin</option>
+        <option value='Prizm'>Prizm</option>
+        <option value='Tron'>Tron</option>
+        <option value='Binance coin'>Binance coin</option>
+        <option value='Decimal'>Decimal</option>
+       </select></p>
+        <button onclick="add()" id="addButton">
+            <h1>+</h1>
+        </button>
+    </div>
+</div>
+<button onclick="send()">
+    Получить котировку
+</button>
+<div id="result">
+</div>
+</body>
+</html>
