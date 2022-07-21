@@ -59,18 +59,3 @@ class BT_API:
             result.append(pairs[token])
 
         return result
-
-
-
-if __name__ == "__main__":
-    bt = BT_API()
-
-    pprint(bt.get_prices([
-        'Ethereum',
-        'Bitcoin',
-        'Litecoin',
-        'Prizm',
-        'Tron',
-        'lkjdsbfldns',
-        'Decimal',
-    ])) # done
