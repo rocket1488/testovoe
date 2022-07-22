@@ -34,3 +34,16 @@ async def result(body: Body):
 async def get_csv(data: Data):
     csv_file = converter.json2csv(data.data)
     return StreamingResponse(BytesIO(csv_file))
+
+
+@app.post("/get_xls")
+async def get_xls(data: Data):
+    xls_file = converter.json2csv(data.data)
+    return StreamingResponse(BytesIO(xls_file))
+
+
+@app.post("/get_pdf")
+async def get_pdf(data: Data):
+    pdf_file = converter.json2pdf(data.data)
+    return StreamingResponse(BytesIO(pdf_file))
+

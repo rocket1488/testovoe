@@ -1,19 +1,27 @@
-<table>
-    <caption>Котировки валют</caption>
-   <tr>
-        <th>Код валюты</th>
-        <th>Название валюты</th>
-        <th>Цена</th>
-        <th>Дата котировки</th>
-        <th>Номинал</th>
-   </tr>
-    {% for currency in currencies %}
-        <tr>
-            <td>{{ currency.code }}</td>
-            <td>{{ currency.name }}</td>
-            <td>{{ currency.price }}</td>
-            <td>{{ currency.time }}</td>
-            <td>{{ currency.nominal }}</td>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <table>
+        <caption>Currency quotes</caption>
+       <tr>
+            <th>Currency code</th>
+            <th>Currency name</th>
+            <th>Price</th>
+            <th>Datetime</th>
+            <th>Par</th>
        </tr>
-    {% endfor %}
-</table>
+        {% for currency in currencies %}
+            <tr>
+                <td>{{ currency.code }}</td>
+                <td>{{ currency.name }}</td>
+                <td>{{ currency.price }}</td>
+                <td>{{ currency.time }}</td>
+                <td>{{ currency.nominal }}</td>
+           </tr>
+        {% endfor %}
+    </table>
+    </body>
+</html>
