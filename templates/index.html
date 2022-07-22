@@ -4,6 +4,40 @@
     <meta charset="UTF-8">
     <title>Курсы валют</title>
     <script>
+
+        function send_data(link){
+            let xhr = new XMLHttpRequest();
+            xhr.open("POST", "/" + link, true)
+            let data = {"data" : localStorage.getItem('data')}
+
+            xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+            xhr.responseType = 'blob';
+
+            xhr.onload = function() {
+                // Only handle status code 200
+                if (xhr.status === 200) {
+                    // Try to find out the filename from the content disposition `filename` value
+                    var disposition = xhr.getResponseHeader('content-disposition');
+                    var matches = /"([^"]*)"/.exec(disposition);
+                    var filename = (matches != null && matches[1] ? matches[1] : 'file.' + link);
+
+                    // The actual download
+                    var blob = new Blob([xhr.response], {type: 'application/pdf'});
+                    var link = document.createElement('a');
+                    link.href = window.URL.createObjectURL(blob);
+                    link.download = filename;
+
+                    document.body.appendChild(link);
+
+                    link.click();
+
+                    document.body.removeChild(link);
+                }
+            }
+            console.log(JSON.stringify(data))
+            xhr.send(JSON.stringify(data))
+        }
+
         function add(){
             slct = document.createElement('p')
             slct.innerHTML = `<p><select class="currency">
@@ -24,7 +58,10 @@
             let xhr = new XMLHttpRequest();
             xhr.onreadystatechange = function() {
                 if (xhr.readyState == XMLHttpRequest.DONE) {
-                    document.getElementById('result').innerHTML = xhr.responseText;
+                    data = JSON.parse(xhr.response);
+                    document.getElementById("inputForm").hidden = true;
+                    tableCreate(data);
+                    localStorage.setItem('data', xhr.response)
                 }
             }
             xhr.open("POST", "/result")
@@ -41,10 +78,54 @@
             }
             xhr.send(JSON.stringify(data))
         }
+
+        function tableCreate(data) {
+            rslt = document.getElementById("result");
+            table = document.createElement('table');
+            capt = table.createCaption();
+            capt.textContent = "Котировки валют";
+            tr = table.createTHead();
+            th1 = document.createElement('th');
+            th1.innerText = "Код валюты";
+            th2 = document.createElement('th');
+            th2.innerText = "Название валюты";
+            th3 = document.createElement('th');
+            th3.innerText = "Цена";
+            th4 = document.createElement('th');
+            th4.innerText = "Дата котировки";
+            th5 = document.createElement('th');
+            th5.innerText = "Номинал";
+            tr.appendChild(th1);
+            tr.appendChild(th2);
+            tr.appendChild(th3);
+            tr.appendChild(th4);
+            tr.appendChild(th5);
+            for (let i = 0; i < data.length; i++) {
+                const tr = table.insertRow();
+                tr.insertCell().innerText = data[i]['code']
+                tr.insertCell().innerText = data[i]['name']
+                tr.insertCell().innerText = data[i]['price']
+                tr.insertCell().innerText = data[i]['time']
+                tr.insertCell().innerText = data[i]['nominal']
+              }
+            get_csv = document.createElement('button')
+            get_csv.onclick = function () {send_data('get_csv')};
+            get_csv.innerText = 'Save as csv'
+            get_xls = document.createElement('button')
+            get_xls.onclick = function () {send_data('get_csv')};
+            get_xls.innerText = 'Save as xls'
+            get_pdf = document.createElement('button')
+            get_pdf.onclick = function () {send_data('get_csv')};
+            get_pdf.innerText = 'Save as pdf'
+            rslt.appendChild(table)
+            rslt.appendChild(get_csv)
+            rslt.appendChild(get_xls)
+            rslt.appendChild(get_pdf)
+        }
     </script>
 </head>
 <body>
-<div>
+<div id="inputForm">
     <div id="curList">
         <p><select class="currency">
         <option value='Ethereum'>Ethereum</option>
@@ -59,10 +140,10 @@
             <h1>+</h1>
         </button>
     </div>
+    <button onclick="send()">
+        Получить котировку
+    </button>
 </div>
-<button onclick="send()">
-    Получить котировку
-</button>
 <div id="result">
 </div>
 </body>

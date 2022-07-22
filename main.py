@@ -1,7 +1,11 @@
-from fastapi import FastAPI
-from fastapi.responses import HTMLResponse
+from fastapi import FastAPI, status
+from fastapi.responses import HTMLResponse, StreamingResponse
 from starlette.templating import Jinja2Templates
-from models import Body
+from jinja2 import Template
+from io import BytesIO
+
+import converter
+from models import Body, Data
 from api import BT_API
 
 app = FastAPI()
@@ -17,5 +21,16 @@ async def index():
 @app.post("/result")
 async def result(body: Body):
     prices = bt.get_prices(body.currencies)
-    print(prices)
-    return HTMLResponse(open('templates/result.html').read())
+    if not prices:
+        return {"status_code": status.HTTP_204_NO_CONTENT, "body": "something went wrong"}
+    html = Template(open('templates/result.html').read()).render(
+        currencies=prices
+    )
+    #return HTMLResponse(html)
+    return prices
+
+
+@app.post("/get_csv")
+async def get_csv(data: Data):
+    csv_file = converter.json2csv(data.data)
+    return StreamingResponse(BytesIO(csv_file))

@@ -1,8 +1,7 @@
-from typing import List, Optional
+from typing import Optional
 from datetime import datetime
 
 import requests
-from pprint import pprint
 
 
 class BT_API:
@@ -20,32 +19,36 @@ class BT_API:
     def __init__(self) -> None:
 
         # urls
-        self.BASE_URI = "https://bit.team/trade/api"
-        self.GET_PAIRS = self.BASE_URI + "/pairs"
+        self.BASE_URL = "https://bit.team/trade/api"
+        self.GET_PAIRS = self.BASE_URL + "/pairs"
 
     def get_pairs(self):
-        pairs = requests.get(
-            self.GET_PAIRS
-        ).json()
+        try:
+            pairs = requests.get(
+                self.GET_PAIRS
+            ).json()
 
-        result = {}
-        for pair in pairs['result']['pairs']:
-            if "usdt" in pair['name']:
-                coin_name = self.COIN_NAME[pair['name']]
-                result[coin_name] = {
-                    'code': int(pair['id']),
-                    'name': self.COIN_NAME[pair['name']],
-                    'price': float(pair['lastPrice']),
-                    'time': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-                    'nominal': 1,
-                }
+            result = {}
+            for pair in pairs['result']['pairs']:
+                if "usdt" in pair['name']:
+                    coin_name = self.COIN_NAME[pair['name']]
+                    result[coin_name] = {
+                        'code': int(pair['id']),
+                        'name': self.COIN_NAME[pair['name']],
+                        'price': float(pair['lastPrice']),
+                        'time': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                        'nominal': 1,
+                    }
 
-        return result
+            return result
+        except:
+            return None
 
     def get_prices(self, token_list: list) -> Optional[list]:
         result = []
         pairs = self.get_pairs()
-
+        if not pairs:
+            return None
         for token in token_list:
             if not token in list(self.COIN_NAME.values()):
                 result.append({
@@ -59,3 +62,4 @@ class BT_API:
             result.append(pairs[token])
 
         return result
+
