@@ -1,4 +1,5 @@
-import json, os
+import json
+import os
 from jinja2 import Template
 import pandas as pd
 from xhtml2pdf import pisa
@@ -31,4 +32,3 @@ def json2pdf(data):
     buffer = BytesIO()
     pisa.CreatePDF(html, dest=buffer, encoding='UTF-8')
     return buffer.getvalue()
-

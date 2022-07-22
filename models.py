@@ -15,4 +15,4 @@ class Currency(BaseModel):
 
 
 class Data(BaseModel):
-    data: Union[str, None] = None
+    data: str

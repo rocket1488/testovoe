@@ -1,7 +1,6 @@
 from fastapi import FastAPI, status
 from fastapi.responses import HTMLResponse, StreamingResponse
 from starlette.templating import Jinja2Templates
-from jinja2 import Template
 from io import BytesIO
 
 import converter
@@ -23,10 +22,6 @@ async def result(body: Body):
     prices = bt.get_prices(body.currencies)
     if not prices:
         return {"status_code": status.HTTP_204_NO_CONTENT, "body": "something went wrong"}
-    html = Template(open('templates/result.html').read()).render(
-        currencies=prices
-    )
-    #return HTMLResponse(html)
     return prices
 
 
@@ -46,4 +41,3 @@ async def get_xls(data: Data):
 async def get_pdf(data: Data):
     pdf_file = converter.json2pdf(data.data)
     return StreamingResponse(BytesIO(pdf_file))
-
