@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="/static/style.css">
     <title>Курсы валют</title>
     <script>
 
@@ -42,8 +44,8 @@
         }
 
         function add(){
-            slct = document.createElement('p')
-            slct.innerHTML = `<p><select class="currency">
+            slct = document.createElement('div')
+            slct.innerHTML = `<select class="currency">
         <option value='Ethereum'>Ethereum</option>
         <option value='Bitcoin'>Bitcoin</option>
         <option value='Litecoin'>Litecoin</option>
@@ -51,7 +53,7 @@
         <option value='Tron'>Tron</option>
         <option value='Binance coin'>Binance coin</option>
         <option value='Decimal'>Decimal</option>
-       </select></p>`
+       </select>`
             btn = document.getElementById("addButton")
             list = document.getElementById("curList")
             list.insertBefore(slct, btn)
@@ -85,8 +87,6 @@
         function tableCreate(data) {
             rslt = document.getElementById("result");
             table = document.createElement('table');
-            capt = table.createCaption();
-            capt.textContent = "Котировки валют";
             tr = table.createTHead();
             th1 = document.createElement('th');
             th1.innerText = "Код валюты";
@@ -118,6 +118,10 @@
             get_xls.onclick = function () {send_data('get_xls')};
             get_xls.innerText = 'Save as xls'
             get_pdf = document.createElement('button')
+            const buttonList = [ get_pdf, get_csv, get_xls ];
+            buttonList.forEach(btn => {
+                btn.classList.add('btn', 'ml-2');
+            });
             get_pdf.onclick = function () {send_data('get_pdf')};
             get_pdf.innerText = 'Save as pdf'
             rslt.appendChild(table)
@@ -130,7 +134,8 @@
 <body>
 <div id="inputForm">
     <div id="curList">
-        <p><select class="currency">
+        <div>
+        <select class="currency form-select">
         <option value='Ethereum'>Ethereum</option>
         <option value='Bitcoin'>Bitcoin</option>
         <option value='Litecoin'>Litecoin</option>
@@ -138,12 +143,13 @@
         <option value='Tron'>Tron</option>
         <option value='Binance coin'>Binance coin</option>
         <option value='Decimal'>Decimal</option>
-       </select></p>
-        <button onclick="add()" id="addButton">
-            <h1>+</h1>
+       </select>
+        </div>
+        <button onclick="add()" id="addButton" class="btn btn-default">
+            +
         </button>
     </div>
-    <button onclick="send()">
+    <button onclick="send()" class="btn btn-primary">
         Получить котировку
     </button>
 </div>

@@ -1,5 +1,6 @@
 from fastapi import FastAPI, status
 from fastapi.responses import HTMLResponse, StreamingResponse
+from fastapi.staticfiles import StaticFiles
 from starlette.templating import Jinja2Templates
 from io import BytesIO
 
@@ -8,6 +9,7 @@ from models import Body, Data
 from api import BT_API
 
 app = FastAPI()
+app.mount('/static', StaticFiles(directory="static"), name='static')
 templates = Jinja2Templates(directory="templates")
 bt = BT_API()
 
